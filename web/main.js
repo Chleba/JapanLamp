@@ -5,9 +5,19 @@ class JapanLamp {
 	constructor(){
 		this.dom = {};
 		
+		this.color = '#FF0000';
+		this.brightness = 140;
+		this.wSocket = null;
+
 		this._initColor();
 		this._initBrightness();
 		this._initWebSocket();
+	}
+	_msg(){ return `c_${this.color}-b_${this.brightness}`; }
+	sendMsg(){
+		if(this.wSocket){
+			this.wSocket.send(this._msg());
+		}
 	}
 	_initColor(){
 		this.dom.colorPicker = ge('colorPicker');
@@ -20,22 +30,24 @@ class JapanLamp {
 			wheelThickness: d * .2,
 			wheelDiameter: d,
 			handleDiameter: d * .2 * .5,
+			hex: this.color,
 			onChange: this.changeColor.bind(this)
 		});
-		// this.dom.color.style.backgroundColor = this.colorWheel.color.hex;
+		this.dom.color.style.backgroundColor = this.color;
 	}
 	_initBrightness(){
 		this.dom.brightnessInput = ge('brightnessInput');
 		this.dom.brightnessBox = ge('brightnessBox');
 
+		this.dom.brightnessInput.value = this.brightness;
 		this.dom.brightnessInput.addEventListener('input', this.changeBrightness.bind(this));
 		this.changeBrightness({target:this.dom.brightnessInput});
 	}
 	_initWebSocket(){
 		this.wSocket = new WebSocket('ws://'+window.location.host+':81');
-		// this.wSocket.onopen = function(e){ infobox.innerHTML = 'connected'; infobox.style.color = 'green'; }
-		// this.wSocket.onclose = function(e){ infobox.innerHTML = 'disconnected'; infobox.style.color = 'black'; }
-		// this.wSocket.onerror = function(e){ infobox.innerHTML = 'error'; infobox.style.color = 'red'; }
+		this.wSocket.onopen = function(e){ console.log('connected'); }
+		this.wSocket.onclose = function(e){ console.log('disconnected'); }
+		this.wSocket.onerror = function(e){ console.log('error'); }
 		this.wSocket.onmessage = this.socketMsg.bind(this);
 	}
 
@@ -49,13 +61,16 @@ class JapanLamp {
 		
 		this.dom.color.style.backgroundColor = color.hex;
 		console.log('#'+rgb565, ' - color');
+		this.sendMsg();
 	}
 	changeBrightness(e){
 		var v = e.target.value;
 		this.dom.brightnessBox.style.backgroundColor = 'rgb('+v+','+v+','+v+')';
 		console.log(e.target.value, 'brightness input value');
+		this.sendMsg();
 	}
 	socketMsg(e){
-		console.log(e, arguments);
+		console.log(e.data);
+
 	}
 };
