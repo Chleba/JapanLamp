@@ -1,0 +1,11 @@
+/*body { height: 100vh; padding:0; margin:0; display:flex; align-items:center; justify-content:center; flex-direction:column; }*/
+/*#colorPicker { height:70%; display:flex; justify-content:center; align-items:center; max-width:800px; }*/
+/*#info { display:block; background-color:#ddd; position:absolute; top:0px; left:50%; border:1px solid #333; font-size:12px; text-align:center; padding:4px; border-radius:6px; }*/
+/*input[type=range][orient=vertical] { writing-mode:bt-lr; -webkit-appearance:slider-vertical; }*/
+/*.brightness { height:30%; }*/
+/*.brightness input { height:200px; }*/
+
+body, html { height: 100%; padding:0; margin:0; }
+.main { height: 100%; }
+.tab-content, .nav-container { max-width:600px; margin:0 auto; }
+#colorPicker { display:flex; justify-content:center; align-items:center; margin-top: 40px }

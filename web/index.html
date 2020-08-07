@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=2">
+    <title>Japan Lamp Control</title>
+
+		<link rel="stylesheet" href="./style.css" />
+		<link rel="stylesheet" href="./reinvented-color-wheel.min.css" />
+		<link rel="stylesheet" href="./bootstrap.min.css" />
+
+		<script src="./jquery.min.js" charset="utf-8"></script>
+		<script src="./popper.min.js" charset="utf-8"></script>
+		<script src="./bootstrap.min.js" charset="utf-8"></script>
+		<script src="./reinvented-color-wheel.min.js" charset="utf-8"></script>
+		<script src="./main.js" charset="utf-8"></script>
+
+  </head>
+  <body>
+
+		<div class="main">
+			<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+				<div class="nav-container">
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+				    <span class="navbar-toggler-icon"></span>
+				  </button>
+				  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+
+						<ul class="nav navbar-nav" id="myTab" role="tablist">
+							<li class="nav-item" role="presentation">
+								<a class="nav-link active" id="color-tab" data-toggle="tab" href="#color" role="tab" aria-controls="color" aria-selected="true">Color</a>
+							</li>
+							<li class="nav-item" role="presentation">
+								<a class="nav-link" id="brightness-tab" data-toggle="tab" href="#brightness" role="tab" aria-controls="brightness" aria-selected="false">Brightness</a>
+							</li>
+							<li class="nav-item" role="presentation">
+								<a class="nav-link" id="matrix-tab" data-toggle="tab" href="#matrix" role="tab" aria-controls="matrix" aria-selected="false">Matrix</a>
+							</li>
+						</ul>
+
+					</div>
+				</div>
+			</nav>
+
+			<div class="tab-content">
+			  <div class="tab-pane active" id="color" role="tabpanel" aria-labelledby="color-tab">
+			  	<div id="colorPicker"></div>
+			  </div>
+			  <div class="tab-pane" id="brightness" role="tabpanel" aria-labelledby="brightness-tab">...2</div>
+			  <div class="tab-pane" id="matrix" role="tabpanel" aria-labelledby="matrix-tab">..3.</div>
+			</div>
+
+			<script type="text/javascript"> var _jl = new JapanLamp(); </script>
+		</div>
+
+  </body>
+</html>
