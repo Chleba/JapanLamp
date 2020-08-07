@@ -8,6 +8,7 @@ class JapanLamp {
 	}
 	_initColor(){
 		this.dom.colorbox = document.getElementById('colorPicker');
+		this.dom.color = document.getElementById('color');
 		let d = 600 * .35;
 		this.colorWheel = new ReinventedColorWheel({
 			appendTo: this.dom.colorbox,
@@ -17,6 +18,7 @@ class JapanLamp {
 			handleDiameter: d * .2 * .5,
 			onChange: this.changeColor.bind(this)
 		});
+		// this.dom.color.style.backgroundColor = this.colorWheel.color.hex;
 	}
 	_initWebSocket(){
 		this.wSocket = new WebSocket('ws://'+window.location.host+':81');
@@ -34,8 +36,7 @@ class JapanLamp {
 		var rgb565 = (((r & 0xf8)<<8)+((g & 0xfc)<<3)+((b & 0xf8)>>3)).toString(16);
 		while (rgb565.length<4){ rgb565 = "0" + rgb565; }
 		
-		document.body.style.backgroundColor = color.hex;
-		// document.body.style.backgroundColor = '#'+rgb565;
+		this.dom.color.style.backgroundColor = color.hex;
 		console.log('#'+rgb565, ' - color');
 	}
 
