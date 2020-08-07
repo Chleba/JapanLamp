@@ -1,17 +1,21 @@
 
+var ge = document.getElementById.bind(document);
+
 class JapanLamp {
 	constructor(){
 		this.dom = {};
 		
 		this._initColor();
+		this._initBrightness();
 		this._initWebSocket();
 	}
 	_initColor(){
-		this.dom.colorbox = document.getElementById('colorPicker');
-		this.dom.color = document.getElementById('color');
+		this.dom.colorPicker = ge('colorPicker');
+		this.dom.color = ge('color');
+
 		let d = 600 * .35;
 		this.colorWheel = new ReinventedColorWheel({
-			appendTo: this.dom.colorbox,
+			appendTo: this.dom.colorPicker,
 			wheelReflectsSaturation: false,
 			wheelThickness: d * .2,
 			wheelDiameter: d,
@@ -19,6 +23,13 @@ class JapanLamp {
 			onChange: this.changeColor.bind(this)
 		});
 		// this.dom.color.style.backgroundColor = this.colorWheel.color.hex;
+	}
+	_initBrightness(){
+		this.dom.brightnessInput = ge('brightnessInput');
+		this.dom.brightnessBox = ge('brightnessBox');
+
+		this.dom.brightnessInput.addEventListener('input', this.changeBrightness.bind(this));
+		this.changeBrightness({target:this.dom.brightnessInput});
 	}
 	_initWebSocket(){
 		this.wSocket = new WebSocket('ws://'+window.location.host+':81');
@@ -39,7 +50,11 @@ class JapanLamp {
 		this.dom.color.style.backgroundColor = color.hex;
 		console.log('#'+rgb565, ' - color');
 	}
-
+	changeBrightness(e){
+		var v = e.target.value;
+		this.dom.brightnessBox.style.backgroundColor = 'rgb('+v+','+v+','+v+')';
+		console.log(e.target.value, 'brightness input value');
+	}
 	socketMsg(e){
 		console.log(e, arguments);
 	}
