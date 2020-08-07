@@ -59,9 +59,10 @@ void handleSocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
     socket.sendTXT(num, msg, strlen(msg));
     break;
   case WStype_TEXT:
+    Serial.printf("[%u] get Text: %s\r\n", num, payload);
     const char *pch = static_cast<const char*>(payload);
     if(pch[0] == 'c' && pch[1] == '_'){
-      
+
     }
     break;
   }
