@@ -2,7 +2,7 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <string>
-#include <LittleFS.h>
+#include <FS.h>
 // -- ESP8266 libs
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -111,19 +111,18 @@ String getContentType(String filename){
 
 bool handleFileRead(String path){
   if(path.endsWith("/")) path += "index.html";
-	path = "../web" + path;
+	// path = "../web" + path;
 
 	Serial.print("OPEN PATH - ");
   Serial.println(path);
 
-  if(LittleFS.exists(path)){
-    File file = LittleFS.open(path, "r");
+  if(SPIFFS.exists(path)){
+    File file = SPIFFS.open(path, "r");
     size_t sent = server.streamFile(file, getContentType(path));
     file.close();
     return true;
   }
   return false;
-  
 }
 
 void setup() {
@@ -136,7 +135,7 @@ void setup() {
 
   delay(100);
 
-  LittleFS.begin();
+  SPIFFS.begin();
   // -- socket
   socket.begin();
   socket.onEvent(handleSocket);
