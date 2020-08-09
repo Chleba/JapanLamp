@@ -2,6 +2,7 @@
 #include <SPI.h>
 #include <Wire.h>
 #include <string>
+#include <LittleFS.h>
 // -- ESP8266 libs
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -18,6 +19,7 @@
 #define PIN D5
 
 uint16_t getPayloadColor(const char *payload);
+uint8_t getPayloadBrightness(const char *payload);
 
 // -- INIT MATRIX
 Adafruit_NeoMatrix *matrix = new Adafruit_NeoMatrix(
@@ -64,7 +66,7 @@ void handleSocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
     const char *pch = (const char*)payload;
     if(pch[0] == 'c' && pch[1] == '_'){
       matrix->fillScreen(getPayloadColor(pch));
-      matrix->SetBrightness(getPayloadBrightness(ph));
+      matrix->setBrightness(getPayloadBrightness(pch));
     }
     socket.broadcastTXT(payload, length);
     break;
@@ -80,13 +82,43 @@ uint16_t getPayloadColor(const char *payload){
   String p = String(payload);
   uint8_t r = (p.substring(p1, p2)).toInt();
   uint8_t g = (p.substring(p2, p3)).toInt();
-  uint8_t g = (p.substring(p3, p4)).toInt();
+  uint8_t b = (p.substring(p3, p4)).toInt();
   
   return matrix->Color(r, g, b);
 }
 
 uint8_t getPayloadBrightness(const char *payload){
   // int p1 = payload - strchr(payload, '-') + 1;
+  return 140;
+}
+
+String getContentType(String filename){
+    if(server.hasArg("download")) return "application/octet-stream";
+    else if(filename.endsWith(".htm")) return "text/html";
+    else if(filename.endsWith(".html")) return "text/html";
+    else if(filename.endsWith(".css")) return "text/css";
+    else if(filename.endsWith(".js")) return "application/javascript";
+    else if(filename.endsWith(".png")) return "image/png";
+    else if(filename.endsWith(".gif")) return "image/gif";
+    else if(filename.endsWith(".jpg")) return "image/jpeg";
+    else if(filename.endsWith(".ico")) return "image/x-icon";
+    else if(filename.endsWith(".xml")) return "text/xml";
+    else if(filename.endsWith(".pdf")) return "application/x-pdf";
+    else if(filename.endsWith(".zip")) return "application/x-zip";
+    else if(filename.endsWith(".gz")) return "application/x-gzip";
+    return "text/plain";
+}
+
+bool handleFileRead(String path){
+  if(path.endsWith("/")) path += "index.html";
+  if(LittleFS.exists(path)){
+    File file = LittleFS.open(path, "r");
+    size_t sent = server.streamFile(file, getContentType(path));
+    file.close();
+    return true;
+  }
+  return false;
+  
 }
 
 void setup() {
@@ -99,13 +131,18 @@ void setup() {
 
   delay(100);
 
+  LittleFS.begin();
   // -- socket
   socket.begin();
   socket.onEvent(handleSocket);
   // -- web server
   server.begin();
-  server.on("/", handleRoot);
-  server.onNotFound(handleNotFound);
+  // server.on("/", handleRoot);
+  // server.onNotFound(handleNotFound);
+  server.onNotFound([](){
+    if(!handleFileRead(server.uri()))
+      server.send(404, "text/plain", "404");
+  });
   // -- DNS
   if (mdns.begin("japanlamp", WiFi.localIP())) {
     Serial.println("MDNS responder started");
