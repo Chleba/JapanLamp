@@ -17,6 +17,8 @@
 
 #define PIN D5
 
+uint16_t getPayloadColor(const char *payload);
+
 // -- INIT MATRIX
 Adafruit_NeoMatrix *matrix = new Adafruit_NeoMatrix(
     8, 8, PIN,
@@ -55,19 +57,36 @@ void handleSocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
   case WStype_CONNECTED:
     char msg[512];
     sprintf(msg, "c_r%dg%db%d-b_%d", m_color[0], m_color[1], m_color[2], m_brightness);
-    // const char *c = reinterpret_cast<const char *>(m_color);
-    // const char *b = reinterpret_cast<const char *>(m_brightness);
-    // sprintf(msg, "c_%s-b_%s", c, b);
-    // socket.sendTXT(num, msg, strlen(msg));
+    socket.sendTXT(num, msg, strlen(msg));
     break;
   case WStype_TEXT:
     Serial.printf("[%u] get Text: %s\r\n", num, payload);
     const char *pch = (const char*)payload;
     if(pch[0] == 'c' && pch[1] == '_'){
-
+      matrix->fillScreen(getPayloadColor(pch));
+      matrix->SetBrightness(getPayloadBrightness(ph));
     }
+    socket.broadcastTXT(payload, length);
     break;
   }
+}
+
+uint16_t getPayloadColor(const char *payload){
+  int p1 = payload - strchr(payload, 'r') + 1;
+  int p2 = payload - strchr(payload, 'g') + 1;
+  int p3 = payload - strchr(payload, 'b') + 1;
+  int p4 = payload - strchr(payload, '-') + 1;
+
+  String p = String(payload);
+  uint8_t r = (p.substring(p1, p2)).toInt();
+  uint8_t g = (p.substring(p2, p3)).toInt();
+  uint8_t g = (p.substring(p3, p4)).toInt();
+  
+  return matrix->Color(r, g, b);
+}
+
+uint8_t getPayloadBrightness(const char *payload){
+  // int p1 = payload - strchr(payload, '-') + 1;
 }
 
 void setup() {
