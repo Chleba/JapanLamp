@@ -1,0 +1,15 @@
+{
+  "name": "japan_lamp",
+  "version": "1.0.0",
+  "description": "Web Control for 3D printed JapanLamp",
+  "main": "buildweb.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "uglify-js": "^3.10.1",
+    "uglifycss": "0.0.29"
+  }
+}

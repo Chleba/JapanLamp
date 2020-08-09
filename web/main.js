@@ -67,28 +67,31 @@ JapanLamp.prototype = {
   },
 
   changeColor: function(color) {
-    var r = parseInt("0x" + color.hex[1] + color.hex[2]);
-    var g = parseInt("0x" + color.hex[3] + color.hex[4]);
-    var b = parseInt("0x" + color.hex[5] + color.hex[6]);
+    // var r = parseInt("0x" + color.hex[1] + color.hex[2]);
+    // var g = parseInt("0x" + color.hex[3] + color.hex[4]);
+    // var b = parseInt("0x" + color.hex[5] + color.hex[6]);
 
-    var rgb565 = (
-      ((r & 0xf8) << 8) +
-      ((g & 0xfc) << 3) +
-      ((b & 0xf8) >> 3)
-    ).toString(16);
-    while (rgb565.length < 4) {
-      rgb565 = "0" + rgb565;
-    }
+    // var rgb565 = (
+    //   ((r & 0xf8) << 8) +
+    //   ((g & 0xfc) << 3) +
+    //   ((b & 0xf8) >> 3)
+    // ).toString(16);
+    // while (rgb565.length < 4) {
+    //   rgb565 = "0" + rgb565;
+    // }
 
     this.dom.color.style.backgroundColor = color.hex;
-    console.log("#" + rgb565, " - color");
+    // console.log("#" + rgb565, " - color");
+    this.color = color.rgb;
+    console.log(this.color, ' - color');
     this.sendMsg();
   },
   changeBrightness: function(e) {
     var v = e.target.value;
     this.dom.brightnessBox.style.backgroundColor =
       "rgb(" + v + "," + v + "," + v + ")";
-    console.log(e.target.value, "brightness input value");
+      this.brightness = v;
+    console.log(this.brightness, "brightness input value");
     this.sendMsg();
   },
   socketMsg: function(e) {
