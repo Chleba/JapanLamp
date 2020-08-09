@@ -110,6 +110,8 @@ String getContentType(String filename){
 }
 
 bool handleFileRead(String path){
+	Serial.print("OPEN PATH - ");
+  Serial.println(path);
   if(path.endsWith("/")) path += "index.html";
   if(LittleFS.exists(path)){
     File file = LittleFS.open(path, "r");
