@@ -27,19 +27,20 @@ Adafruit_NeoMatrix *matrix = new Adafruit_NeoMatrix(
 ESP8266WebServer server(80);
 WebSocketsServer socket(81);
 MDNSResponder mdns;
-unsigned long sec10 = 0;
-unsigned int counter = 0;
-uint16_t m_color = 0xFFFF;
+ulong sec10 = 0;
+uint counter = 0;
+// uint16_t m_color = 0xFFFF;
+uint8_t m_color[3] = {255, 255, 255};
 uint8_t m_brightness = 140;
 
-uint16_t RGB888toRGB565(const char *rgb32_str_){
-  long rgb32=strtoul(rgb32_str_, 0, 16);
-  return (rgb32>>8&0xf800)|(rgb32>>5&0x07e0)|(rgb32>>3&0x001f);
-}
+// uint16_t RGB888toRGB565(const char *rgb32_str_){
+//   long rgb32=strtoul(rgb32_str_, 0, 16);
+//   return (rgb32>>8&0xf800)|(rgb32>>5&0x07e0)|(rgb32>>3&0x001f);
+// }
 void initMatrix() {
   matrix->begin();
   matrix->setBrightness(m_brightness);
-  matrix->fillScreen(m_color);
+  matrix->fillScreen(matrix->Color(m_color[0], m_color[1], m_color[2]));
   matrix->show();
   delay(1000);
   matrix->clear();
@@ -53,14 +54,15 @@ void handleSocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
     break;
   case WStype_CONNECTED:
     char msg[512];
-    const char *c = reinterpret_cast<const char *>(m_color);
-    const char *b = reinterpret_cast<const char *>(m_brightness);
-    sprintf(msg, "c_%s-b_%s", c, b);
-    socket.sendTXT(num, msg, strlen(msg));
+    sprintf(msg, "c_r%dg%db%d-b_%d", m_color[0], m_color[1], m_color[2], m_brightness);
+    // const char *c = reinterpret_cast<const char *>(m_color);
+    // const char *b = reinterpret_cast<const char *>(m_brightness);
+    // sprintf(msg, "c_%s-b_%s", c, b);
+    // socket.sendTXT(num, msg, strlen(msg));
     break;
   case WStype_TEXT:
     Serial.printf("[%u] get Text: %s\r\n", num, payload);
-    const char *pch = static_cast<const char*>(payload);
+    const char *pch = (const char*)payload;
     if(pch[0] == 'c' && pch[1] == '_'){
 
     }
