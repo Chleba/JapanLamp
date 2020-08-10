@@ -56,7 +56,7 @@ JapanLamp.prototype = {
   },
   _initState: function() {
     this.dom.stateInput = ge("stateInput");
-    this.dom.stateInput.checked = this.state;
+    this.dom.stateInput.checked = this.state < 1 ? false : true;
     this.dom.stateInput.addEventListener("change", this.changeState.bind(this));
   },
   _initWebSocket: function() {
@@ -75,7 +75,7 @@ JapanLamp.prototype = {
 
   changeState: function(e) {
     this.state = e.target.checked;
-    // this.dom.stateInput.checked = this.state;
+    this.sendMsg();
   },
   changeColor: function(color) {
     // var r = parseInt("0x" + color.hex[1] + color.hex[2]);
@@ -93,8 +93,8 @@ JapanLamp.prototype = {
 
     this.dom.color.style.backgroundColor = color.hex;
     if (
-      this.color[0] != color.rgb[0] &&
-      this.color[1] != color.rgb[1] &&
+      this.color[0] != color.rgb[0] ||
+      this.color[1] != color.rgb[1] ||
       this.color[2] != color.rgb[2]
     ) {
       this.color = color.rgb;
@@ -119,7 +119,7 @@ JapanLamp.prototype = {
     var g = d.split("b")[0].split("g")[1] * 1;
     var b = d.split("-")[0].split("b")[1] * 1;
 
-    var brightness = d.split("s_")[0].split("b_")[1] * 1;
+    var brightness = d.split("-s")[0].split("b_")[1] * 1;
 
     var state = d.split("s_")[1];
 
@@ -128,7 +128,7 @@ JapanLamp.prototype = {
     this.brightness = brightness;
     this.dom.brightnessInput.value = this.brightness;
     this.state = state;
-    this.dom.stateInput.checked = this.state;
+    this.dom.stateInput.checked = this.state < 1 ? false : true;
 
     console.log(e.data);
   },

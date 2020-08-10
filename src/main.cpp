@@ -134,7 +134,7 @@ bool getPayloadState(const char *payload) {
   String p = String(payload);
 
   int p1 = p.lastIndexOf("s");
-  String s_s = p.substring(p1 + 1, p.length());
+  String s_s = p.substring(p1 + 2, p.length());
   int s_i = s_s.toInt();
 
   return (s_i < 1 ? false : true);
