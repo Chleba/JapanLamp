@@ -81,10 +81,11 @@ JapanLamp.prototype = {
     // }
 
     this.dom.color.style.backgroundColor = color.hex;
-    // console.log("#" + rgb565, " - color");
-    this.color = color.rgb;
-    console.log(this.color, ' - color');
-    this.sendMsg();
+    if(this.color[0] != color.rgb[0] && this.color[1] != color.rgb[1] && this.color[2] != color.rgb[2]){
+	    this.color = color.rgb;
+	    console.log(this.color, ' - color');
+	    this.sendMsg();
+	  }
   },
   changeBrightness: function(e) {
     var v = e.target.value;
