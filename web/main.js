@@ -5,7 +5,7 @@ var JapanLamp = function() {
 
   this.color = [255, 0, 0];
   this.brightness = 140;
-  this.state = false;
+  this.state = true;
   this.wSocket = null;
 
   this._initColor();
@@ -19,10 +19,11 @@ JapanLamp.prototype = {
     // return `c_${this.color}-b_${this.brightness}`;
     var msg = "c_r" + this.color[0] + "g" + this.color[1] + "b" + this.color[2];
     msg += "-b_" + this.brightness;
-    msg += "-s_" + this.state;
+    msg += "-s_" + (this.state ? 1 : 0);
     return msg;
   },
   sendMsg: function() {
+  	console.log('msg sent: '+this._msg());
     if (this.wSocket) {
       this.wSocket.send(this._msg());
     }
@@ -56,8 +57,9 @@ JapanLamp.prototype = {
   },
   _initState: function() {
     this.dom.stateInput = ge("stateInput");
-    this.dom.stateInput.checked = this.state < 1 ? false : true;
-    this.dom.stateInput.addEventListener("change", this.changeState.bind(this));
+    this.dom.stateInput.checked = this.state;
+    $('#stateInput').change(this.changeState.bind(this));
+    // this.dom.stateInput.addEventListener("change", this.changeState.bind(this));
   },
   _initWebSocket: function() {
     this.wSocket = new WebSocket("ws://" + window.location.host + ":81");
@@ -121,14 +123,15 @@ JapanLamp.prototype = {
 
     var brightness = d.split("-s")[0].split("b_")[1] * 1;
 
-    var state = d.split("s_")[1];
+    var state = (d.split("s_")[1] * 1) < 1 ? false : true;
 
     this.color = [r, g, b];
     this.colorWheel.rgb = this.color;
     this.brightness = brightness;
     this.dom.brightnessInput.value = this.brightness;
     this.state = state;
-    this.dom.stateInput.checked = this.state < 1 ? false : true;
+    // this.dom.stateInput.checked = this.state ? '' : 'checked';
+    this.dom.stateInput.checked = this.state;
 
     console.log(e.data);
   },
