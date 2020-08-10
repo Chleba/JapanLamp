@@ -19,7 +19,7 @@
 #define PIN D5
 
 uint16_t getPayloadColor(const char *payload);
-uint8_t getPayloadBrightness(const char *payload);
+int getPayloadBrightness(const char *payload);
 
 // -- INIT MATRIX
 Adafruit_NeoMatrix *matrix = new Adafruit_NeoMatrix(
@@ -63,10 +63,11 @@ void handleSocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
     break;
   case WStype_TEXT:
     Serial.printf("[%u] get Text: %s\r\n", num, payload);
-    const char *pch = (const char*)payload;
+    const char *pch = (const char*)&payload[0];
     if(pch[0] == 'c' && pch[1] == '_'){
       matrix->fillScreen(getPayloadColor(pch));
       matrix->setBrightness(getPayloadBrightness(pch));
+      matrix->show();
     }
     socket.broadcastTXT(payload, length);
     break;
@@ -74,22 +75,42 @@ void handleSocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
 }
 
 uint16_t getPayloadColor(const char *payload){
-  int p1 = payload - strchr(payload, 'r') + 1;
-  int p2 = payload - strchr(payload, 'g') + 1;
-  int p3 = payload - strchr(payload, 'b') + 1;
-  int p4 = payload - strchr(payload, '-') + 1;
-
   String p = String(payload);
-  uint8_t r = (p.substring(p1, p2)).toInt();
-  uint8_t g = (p.substring(p2, p3)).toInt();
-  uint8_t b = (p.substring(p3, p4)).toInt();
-  
+
+  // String r = p.substring(p.indexOf("r"))
+
+  int p1 = p.indexOf("r");
+  int p2 = p.indexOf("g");
+  int p3 = p.indexOf("b");
+  int p4 = p.lastIndexOf("_");
+
+  String r_s = p.substring(p1+1, p2);
+  String g_s = p.substring(p2+1, p3);
+  String b_s = p.substring(p3+1, p4);
+
+  int r = r_s.toInt();
+  int g = g_s.toInt();
+  int b = b_s.toInt();
+
+  Serial.print("Set Color: ");
+  Serial.print(r);
+  Serial.print(g);
+  Serial.println(b);
+
   return matrix->Color(r, g, b);
 }
 
-uint8_t getPayloadBrightness(const char *payload){
-  // int p1 = payload - strchr(payload, '-') + 1;
-  return 140;
+int getPayloadBrightness(const char *payload) {
+  String p = String(payload);
+
+  int p1 = p.lastIndexOf("b");
+  String b_s = p.substring(p1 + 2, p.length());
+  int b = b_s.toInt();
+
+  Serial.print("Set Brightness: ");
+  Serial.println(b);
+
+  return b;
 }
 
 String getContentType(String filename){
