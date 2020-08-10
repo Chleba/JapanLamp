@@ -3,7 +3,6 @@ var ge = document.getElementById.bind(document);
 var JapanLamp = function() {
   this.dom = {};
 
-  // this.color = "#FF0000";
   this.color = [255, 0, 0];
   this.brightness = 140;
   this.wSocket = null;
@@ -83,14 +82,14 @@ JapanLamp.prototype = {
     this.dom.color.style.backgroundColor = color.hex;
     // console.log("#" + rgb565, " - color");
     this.color = color.rgb;
-    console.log(this.color, ' - color');
+    console.log(this.color, " - color");
     this.sendMsg();
   },
   changeBrightness: function(e) {
     var v = e.target.value;
     this.dom.brightnessBox.style.backgroundColor =
       "rgb(" + v + "," + v + "," + v + ")";
-      this.brightness = v;
+    this.brightness = v;
     console.log(this.brightness, "brightness input value");
     this.sendMsg();
   },
