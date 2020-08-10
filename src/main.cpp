@@ -20,6 +20,7 @@
 
 uint16_t getPayloadColor(const char *payload);
 int getPayloadBrightness(const char *payload);
+bool getPayloadState(const char *payload);
 
 // -- INIT MATRIX
 Adafruit_NeoMatrix *matrix = new Adafruit_NeoMatrix(
@@ -36,6 +37,7 @@ uint counter = 0;
 // uint16_t m_color = 0xFFFF;
 uint8_t m_color[3] = {255, 255, 255};
 uint8_t m_brightness = 140;
+bool m_state = true;
 
 // uint16_t RGB888toRGB565(const char *rgb32_str_){
 //   long rgb32=strtoul(rgb32_str_, 0, 16);
@@ -56,18 +58,29 @@ void handleSocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
   switch (type) {
   case WStype_DISCONNECTED:
     break;
-  case WStype_CONNECTED:
+  case WStype_CONNECTED: {
     char msg[512];
-    sprintf(msg, "c_r%dg%db%d-b_%d", m_color[0], m_color[1], m_color[2], m_brightness);
+    int s = (m_state ? 1 : 0);
+    // int s = 1;
+    // if (!m_state) {
+    //   s = 0;
+    // }
+    sprintf(msg, "c_r%dg%db%d-b_%d-s_%d", m_color[0], m_color[1], m_color[2], m_brightness, s);
     socket.sendTXT(num, msg, strlen(msg));
-    break;
+  } break;
   case WStype_TEXT:
     Serial.printf("[%u] get Text: %s\r\n", num, payload);
     const char *pch = (const char*)&payload[0];
-    if(pch[0] == 'c' && pch[1] == '_'){
-      matrix->fillScreen(getPayloadColor(pch));
-      matrix->setBrightness(getPayloadBrightness(pch));
-      matrix->show();
+    if (pch[0] == 'c' && pch[1] == '_') {
+
+      m_state = getPayloadState(pch);
+      if (m_state) {
+        matrix->fillScreen(getPayloadColor(pch));
+        matrix->setBrightness(getPayloadBrightness(pch));
+        matrix->show();
+      } else {
+          matrix->clear();
+      }
     }
     socket.broadcastTXT(payload, length);
     break;
@@ -106,7 +119,8 @@ int getPayloadBrightness(const char *payload) {
   String p = String(payload);
 
   int p1 = p.lastIndexOf("b");
-  String b_s = p.substring(p1 + 2, p.length());
+  int p2 = p.lastIndexOf("_");
+  String b_s = p.substring(p1 + 2, p2);
   int b = b_s.toInt();
   m_brightness = b;
 
@@ -114,6 +128,16 @@ int getPayloadBrightness(const char *payload) {
   Serial.println(b);
 
   return b;
+}
+
+bool getPayloadState(const char *payload) {
+  String p = String(payload);
+
+  int p1 = p.lastIndexOf("s");
+  String s_s = p.substring(p1 + 1, p.length());
+  int s_i = s_s.toInt();
+
+  return (s_i < 1 ? false : true);
 }
 
 String getContentType(String filename){
