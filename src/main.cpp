@@ -77,8 +77,6 @@ void handleSocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
 uint16_t getPayloadColor(const char *payload){
   String p = String(payload);
 
-  // String r = p.substring(p.indexOf("r"))
-
   int p1 = p.indexOf("r");
   int p2 = p.indexOf("g");
   int p3 = p.indexOf("b");
@@ -91,6 +89,10 @@ uint16_t getPayloadColor(const char *payload){
   int r = r_s.toInt();
   int g = g_s.toInt();
   int b = b_s.toInt();
+
+  m_color[0] = r;
+  m_color[1] = g;
+  m_color[2] = b;
 
   Serial.print("Set Color: ");
   Serial.print(r);
@@ -106,6 +108,7 @@ int getPayloadBrightness(const char *payload) {
   int p1 = p.lastIndexOf("b");
   String b_s = p.substring(p1 + 2, p.length());
   int b = b_s.toInt();
+  m_brightness = b;
 
   Serial.print("Set Brightness: ");
   Serial.println(b);
