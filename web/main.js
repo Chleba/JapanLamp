@@ -5,10 +5,12 @@ var JapanLamp = function() {
 
   this.color = [255, 0, 0];
   this.brightness = 140;
+  this.state = false;
   this.wSocket = null;
 
   this._initColor();
   this._initBrightness();
+  this._initState();
   this._initWebSocket();
 };
 
@@ -17,6 +19,7 @@ JapanLamp.prototype = {
     // return `c_${this.color}-b_${this.brightness}`;
     var msg = "c_r" + this.color[0] + "g" + this.color[1] + "b" + this.color[2];
     msg += "-b_" + this.brightness;
+    msg += "-s_" + this.state;
     return msg;
   },
   sendMsg: function() {
@@ -51,6 +54,11 @@ JapanLamp.prototype = {
     );
     this.changeBrightness({ target: this.dom.brightnessInput });
   },
+  _initState: function() {
+    this.dom.stateInput = ge("stateInput");
+    this.dom.stateInput.checked = this.state < 1 ? false : true;
+    this.dom.stateInput.addEventListener("change", this.changeState.bind(this));
+  },
   _initWebSocket: function() {
     this.wSocket = new WebSocket("ws://" + window.location.host + ":81");
     this.wSocket.onopen = function(e) {
@@ -65,6 +73,10 @@ JapanLamp.prototype = {
     this.wSocket.onmessage = this.socketMsg.bind(this);
   },
 
+  changeState: function(e) {
+    this.state = e.target.checked;
+    this.sendMsg();
+  },
   changeColor: function(color) {
     // var r = parseInt("0x" + color.hex[1] + color.hex[2]);
     // var g = parseInt("0x" + color.hex[3] + color.hex[4]);
@@ -80,35 +92,43 @@ JapanLamp.prototype = {
     // }
 
     this.dom.color.style.backgroundColor = color.hex;
-    if(this.color[0] != color.rgb[0] && this.color[1] != color.rgb[1] && this.color[2] != color.rgb[2]){
-	    this.color = color.rgb;
-	    console.log(this.color, ' - color');
-	    this.sendMsg();
-	  }
+    if (
+      this.color[0] != color.rgb[0] ||
+      this.color[1] != color.rgb[1] ||
+      this.color[2] != color.rgb[2]
+    ) {
+      this.color = color.rgb;
+      console.log(this.color, " - color");
+      this.sendMsg();
+    }
   },
   changeBrightness: function(e) {
     var v = e.target.value;
     this.dom.brightnessBox.style.backgroundColor =
       "rgb(" + v + "," + v + "," + v + ")";
-    if(this.brightness != v){
-	    this.brightness = v;
-	    console.log(this.brightness, "brightness input value");
-	    this.sendMsg();
-	  }
+    if (this.brightness != v) {
+      this.brightness = v;
+      console.log(this.brightness, "brightness input value");
+      this.sendMsg();
+    }
   },
   socketMsg: function(e) {
-  	var d = e.data;
+    var d = e.data;
 
-  	var r = (d.split('g'))[0].split('r')[1] * 1
-  	var g = (d.split('b'))[0].split('g')[1] * 1
-  	var b = (d.split('-'))[0].split('b')[1] * 1
+    var r = d.split("g")[0].split("r")[1] * 1;
+    var g = d.split("b")[0].split("g")[1] * 1;
+    var b = d.split("-")[0].split("b")[1] * 1;
 
-  	var brightness = d.split('b_') * 1;
+    var brightness = d.split("-s")[0].split("b_")[1] * 1;
 
-  	this.color = [r, g, b];
-  	this.colorWheel.rgb = this.color;
-  	this.brightness = brightness;
-  	this.dom.brightnessInput.value = this.brightness;
+    var state = d.split("s_")[1];
+
+    this.color = [r, g, b];
+    this.colorWheel.rgb = this.color;
+    this.brightness = brightness;
+    this.dom.brightnessInput.value = this.brightness;
+    this.state = state;
+    this.dom.stateInput.checked = this.state < 1 ? false : true;
 
     console.log(e.data);
   },
