@@ -90,11 +90,26 @@ JapanLamp.prototype = {
     var v = e.target.value;
     this.dom.brightnessBox.style.backgroundColor =
       "rgb(" + v + "," + v + "," + v + ")";
-    this.brightness = v;
-    console.log(this.brightness, "brightness input value");
-    this.sendMsg();
+    if(this.brightness != v){
+	    this.brightness = v;
+	    console.log(this.brightness, "brightness input value");
+	    this.sendMsg();
+	  }
   },
   socketMsg: function(e) {
+  	var d = e.data;
+
+  	var r = (d.split('g'))[0].split('r')[1] * 1
+  	var g = (d.split('b'))[0].split('g')[1] * 1
+  	var b = (d.split('-'))[0].split('b')[1] * 1
+
+  	var brightness = d.split('b_') * 1;
+
+  	this.color = [r, g, b];
+  	this.colorWheel.rgb = this.color;
+  	this.brightness = brightness;
+  	this.dom.brightnessInput.value = this.brightness;
+
     console.log(e.data);
   },
 };
