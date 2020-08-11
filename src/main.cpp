@@ -79,7 +79,8 @@ void handleSocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
         matrix->setBrightness(getPayloadBrightness(pch));
         matrix->show();
       } else {
-          matrix->clear();
+        matrix->clear();
+        matrix->show();
       }
     }
     socket.broadcastTXT(payload, length);
@@ -136,6 +137,9 @@ bool getPayloadState(const char *payload) {
   int p1 = p.lastIndexOf("s");
   String s_s = p.substring(p1 + 2, p.length());
   int s_i = s_s.toInt();
+
+  Serial.print("Set State: ");
+  Serial.println(s_i);
 
   return (s_i < 1 ? false : true);
 }
