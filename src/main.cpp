@@ -59,11 +59,8 @@ void handleSocket(uint8_t num, WStype_t type, uint8_t *payload, size_t length) {
   case WStype_CONNECTED: {
     char msg[512];
     int s = (m_state ? 1 : 0);
-    // int s = 1;
-    // if (!m_state) {
-    //   s = 0;
-    // }
-    sprintf(msg, "c_r%dg%db%d-b_%d-s_%d", m_color[0], m_color[1], m_color[2], m_brightness, s);
+    sprintf(msg, "c_r%dg%db%d-b_%d-s_%d", m_color[0], m_color[1], m_color[2],
+            m_brightness, s);
     socket.sendTXT(num, msg, strlen(msg));
   } break;
   case WStype_TEXT:
