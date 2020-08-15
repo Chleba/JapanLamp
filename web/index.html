@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=2">
     <title>Japan Lamp Control</title>
 
-<!-- 		<link rel="stylesheet" href="./style.css" />
+		<link rel="stylesheet" href="./style.css" />
 		<link rel="stylesheet" href="./reinvented-color-wheel.min.css" />
 		<link rel="stylesheet" href="./bootstrap.min.css" />
 
@@ -14,10 +14,10 @@
 		<script src="./bootstrap.min.js" charset="utf-8"></script>
 		<script src="./toggle.min.js" charset="utf-8"></script>
 		<script src="./reinvented-color-wheel.min.js" charset="utf-8"></script>
-		<script src="./main.js" charset="utf-8"></script> -->
+		<script src="./main.js" charset="utf-8"></script>
 
-		<link rel="stylesheet" href="./main_release.min.css" />
-		<script src="./main_release.min.js" charset="utf-8"></script>
+<!-- 		<link rel="stylesheet" href="./main_release.min.css" />
+		<script src="./main_release.min.js" charset="utf-8"></script> -->
 	</head>
   <body>
 
@@ -52,8 +52,10 @@
 			  </div>
 
 			  <div class="tab-pane" id="brightness" role="tabpanel" aria-labelledby="brightness-tab">
-			  	<h5>LED brightness</h5>
-			  	<div><input class="form-control-range" type="range" min="0" max="255" step="1" value="100" name="brightness" id="brightnessInput" /></div>
+			  	<div class="top">
+				  	<h5>LED brightness</h5>
+				  	<div><input class="form-control-range" type="range" min="0" max="255" step="1" value="100" name="brightness" id="brightnessInput" /></div>
+			  	</div>
 			  	<div id="brightnessBox"></div>
 			  </div>
 			  

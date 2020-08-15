@@ -14,8 +14,6 @@
 #include <Adafruit_NeoMatrix.h>
 // #include <ESP8266httpUpdate.h>
 
-#include "index.h"
-
 #define PIN D5
 
 uint16_t getPayloadColor(const char *payload);
