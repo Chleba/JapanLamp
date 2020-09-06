@@ -16,14 +16,15 @@ var JapanLamp = function() {
 
 JapanLamp.prototype = {
   _msg: function() {
-    // return `c_${this.color}-b_${this.brightness}`;
+    // return `c_${this.color}-b_${this.brightness}`; // -- es6
+
     var msg = "c_r" + this.color[0] + "g" + this.color[1] + "b" + this.color[2];
     msg += "-b_" + this.brightness;
     msg += "-s_" + (this.state ? 1 : 0);
     return msg;
   },
   sendMsg: function() {
-  	console.log('msg sent: '+this._msg());
+    console.log("msg sent: " + this._msg());
     if (this.wSocket) {
       this.wSocket.send(this._msg());
     }
@@ -58,7 +59,7 @@ JapanLamp.prototype = {
   _initState: function() {
     this.dom.stateInput = ge("stateInput");
     this.dom.stateInput.checked = this.state;
-    $('#stateInput').change(this.changeState.bind(this));
+    $("#stateInput").change(this.changeState.bind(this));
     // this.dom.stateInput.addEventListener("change", this.changeState.bind(this));
   },
   _initWebSocket: function() {
@@ -123,7 +124,7 @@ JapanLamp.prototype = {
 
     var brightness = d.split("-s")[0].split("b_")[1] * 1;
 
-    var state = (d.split("s_")[1] * 1) < 1 ? false : true;
+    var state = d.split("s_")[1] * 1 < 1 ? false : true;
 
     this.color = [r, g, b];
     this.colorWheel.rgb = this.color;

@@ -16,4 +16,4 @@ body, html { height: 100%; padding:0; margin:0; }
 #brightness {text-align:center; }
 #brightness .top { padding: 40px 80px; }
 #brightness h5 { color:#333; text-align:center; padding-bottom: 20px; }
-#brightnessBox { /*height:50%;*/ margin:0 auto; width: 140px; height: 140px; border:1px solid #333; }
+#brightnessBox { /*height:50%;*/ margin:0 auto	; width: 140px; height: 140px; border:1px solid #333; }
