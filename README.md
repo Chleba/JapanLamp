@@ -4,3 +4,4 @@
 Created with NodeMCU8266 board
 - WUI: ColorWheel, Brightness, Matrix control
 - WiFi autoconnect
+- WebSocket communication with WUI
